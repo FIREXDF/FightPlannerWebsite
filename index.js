@@ -309,4 +309,62 @@ window.addEventListener('resize', () => {
     ScrollTrigger.refresh();
 });
 
+const setupScreenshotScroll = () => {
+    if (window.innerWidth > 768) return;
+    
+    const screenshotGrid = document.querySelector('.screenshot-grid');
+    const gridClone = screenshotGrid.cloneNode(true);
+    let scrollInterval;
+    let userScrollTimeout;
+    let isUserScrolling = false;
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            screenshotGrid.innerHTML = gridClone.innerHTML;
+            clearInterval(scrollInterval);
+            return;
+        }
+        setupMobileScroll();
+    });
+
+    const setupMobileScroll = () => {
+        screenshotGrid.innerHTML = gridClone.innerHTML;
+        
+        const screenshots = Array.from(screenshotGrid.children);
+        screenshots.forEach(screenshot => {
+            const clone = screenshot.cloneNode(true);
+            screenshotGrid.appendChild(clone);
+        });
+
+        screenshotGrid.querySelectorAll('.screenshot-item img').forEach((img, index) => {
+            img.addEventListener('click', () => {
+                const originalIndex = index % (screenshots.length);
+                const viewer = document.querySelector('.screenshot-viewer');
+                const viewerImg = viewer.querySelector('img');
+                const counter = viewer.querySelector('.screenshot-counter');
+                
+                viewerImg.src = screenshots[originalIndex].querySelector('img').src;
+                counter.textContent = `${originalIndex + 1} / ${screenshots.length}`;
+                viewer.classList.add('active');
+            });
+        });
+
+        const autoScroll = () => {
+            if (isUserScrolling) return;
+            screenshotGrid.scrollLeft += 1;
+            if (screenshotGrid.scrollLeft >= (screenshotGrid.scrollWidth - screenshotGrid.clientWidth)) {
+                screenshotGrid.scrollLeft = 0;
+            }
+        };
+
+        scrollInterval = setInterval(autoScroll, 30);
+    };
+
+    setupMobileScroll();
+};
+
+window.addEventListener('load', () => {
+    setupScreenshotScroll();
+});
+
 console.log('Animations setup complete');

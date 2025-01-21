@@ -305,4 +305,8 @@ window.addEventListener('load', () => {
     ScrollTrigger.refresh();
 });
 
+window.addEventListener('resize', () => {
+    ScrollTrigger.refresh();
+});
+
 console.log('Animations setup complete');

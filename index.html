@@ -28,6 +28,7 @@
                 <a href="#features">Features</a>
                 <a href="#screenshots">Screenshots</a>
                 <a href="#download">Downloads</a>
+                <a href="#user-stats">User Stats</a>
             </nav>
         </div>
 
@@ -145,6 +146,14 @@
                 </div>
             </section>
 
+        <!-- New Section to Display Total User Count -->
+        <section class="section user-stats" id="user-stats" data-scroll-section>
+            <div class="stats-container">
+                <h2>Total Users</h2>
+                <p id="total-users">Loading...</p> <!-- This will show the user count -->
+            </div>
+        </section>
+            
             <section class="section download-section" data-scroll-section id="download">
                 <div class="download-container">
                     <h2>Download Fight Planner</h2>
@@ -200,5 +209,24 @@
     <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Flip.min.js"></script>
     <script src="index.js"></script>
+    <script>
+        // Fetching user statistics from your backend
+        fetch('http://35.239.239.102:3009/get-version-stats')
+            .then(response => response.json())
+            .then(data => {
+                // Calculate the total number of users
+                let totalUsers = 0;
+                data.forEach(item => {
+                    totalUsers += item.user_count;
+                });
+
+                // Display the total user count
+                document.getElementById('total-users').textContent = totalUsers;
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('total-users').textContent = 'Error loading data';
+            });
+    </script>
 </body>
 </html>
